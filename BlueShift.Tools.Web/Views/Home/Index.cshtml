@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<div id="app">
+    {{message}}
+</div>
+<script src="~/lib/vue/dist/vue.min.js"></script>
+<script>
+    const v = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue.js!'
+        }
+    })
+</script>

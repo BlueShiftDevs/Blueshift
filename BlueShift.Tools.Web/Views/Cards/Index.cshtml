@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "All Cards";
+}
+
+<h2>@ViewData["Title"]</h2>
+<div id="app">
+    <div>
+        <p v-for="card in cards"><a v-bind:href="card.detailsLink">{{card.name}}</a><span v-if="card.title"><em> {{card.title}}</em></span></p>
+    </div>
+</div>
+<script src="~/lib/vue/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/vue.resource/1.2.1/vue-resource.min.js"></script>
+<script>
+    const v = new Vue({
+        el: '#app',
+        data: {
+            cards: []
+        },
+        created: function () {
+            // GET /someUrl
+            Vue.http.get('/api/CardData')
+                .then(response => {
+
+                    // get body data
+                    this.$data.cards = response.body;
+                    for (card of this.$data.cards)
+                    {
+                        card.detailsLink = "/cards/Details/" + card.id;
+                    }
+
+                }, response => {
+                    // error callback
+                });
+        }
+    })
+</script>
+
+

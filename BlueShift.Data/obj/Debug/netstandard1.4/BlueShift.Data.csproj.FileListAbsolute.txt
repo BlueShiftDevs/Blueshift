@@ -1,0 +1,7 @@
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Data\bin\Debug\netstandard1.4\BlueShift.Data.deps.json
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Data\bin\Debug\netstandard1.4\BlueShift.Data.dll
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Data\bin\Debug\netstandard1.4\BlueShift.Data.pdb
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Data\obj\Debug\netstandard1.4\BlueShift.Data.csprojResolveAssemblyReference.cache
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Data\obj\Debug\netstandard1.4\BlueShift.Data.AssemblyInfo.cs
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Data\obj\Debug\netstandard1.4\BlueShift.Data.dll
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Data\obj\Debug\netstandard1.4\BlueShift.Data.pdb

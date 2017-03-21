@@ -1,0 +1,9 @@
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Tools.Web\bin\Debug\netcoreapp1.1\BlueShift.Tools.Web.deps.json
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Tools.Web\bin\Debug\netcoreapp1.1\BlueShift.Tools.Web.runtimeconfig.json
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Tools.Web\bin\Debug\netcoreapp1.1\BlueShift.Tools.Web.runtimeconfig.dev.json
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Tools.Web\bin\Debug\netcoreapp1.1\BlueShift.Tools.Web.dll
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Tools.Web\bin\Debug\netcoreapp1.1\BlueShift.Tools.Web.pdb
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Tools.Web\obj\Debug\netcoreapp1.1\BlueShift.Tools.Web.csprojResolveAssemblyReference.cache
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Tools.Web\obj\Debug\netcoreapp1.1\BlueShift.Tools.Web.AssemblyInfo.cs
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Tools.Web\obj\Debug\netcoreapp1.1\BlueShift.Tools.Web.dll
+c:\users\unsur\onedrive\documents\visual studio 2017\Projects\BlueShift.Tools\BlueShift.Tools.Web\obj\Debug\netcoreapp1.1\BlueShift.Tools.Web.pdb

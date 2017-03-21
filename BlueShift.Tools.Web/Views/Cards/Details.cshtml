@@ -1,0 +1,111 @@
+@{
+    ViewData["Title"] = "Card Details";
+}
+<div id="app">
+    <h2>{{card.name}}</h2>
+    <div>
+        <h4 v-if="card.title"><em>{{card.title}}</em></h4>
+        <p>{{card.type | toUpper}}<span v-if="card.subtypes">:<span v-for="st in card.subtypes"> {{st}} </span></span></p>
+        <div v-if="card.type === 'Asset' || card.type === 'Crew' || card.type === 'Upgrade'">
+            <p>
+                <span>[${{card.resourceCost}}]</span>
+                <span v-if="card.icons">[{{card.icons | toActionIcons}}]</span>
+                <span v-if="card.burn">[Burn {{card.burn}}]</span>
+            </p>
+            @*<card-text></card-text>*@
+            <blockquote v-if="card.text">
+                <ul style="list-style-type:none">
+                    <li v-for="t in card.text">{{t}}</li>
+                </ul>
+            </blockquote>
+            <p>
+                <span v-if="card.control">[Control {{card.control}}]</span>
+                <span v-if="card.hull">[Hull {{card.hull}}]</span>
+                <span v-if="card.maxCopies">[Max {{card.maxCopies}}]</span>
+            </p>
+        </div>
+        <div v-if="card.type === 'Event'">
+            <p>
+                <span>[{{card.actionCost | toActionIcon}}]</span>
+                <span>[${{card.resourceCost}}]</span>
+                <span v-if="card.shipSelections">[<span v-for="s in card.shipSelections">{{s | toShipSelection}} </span>]</span>
+                <span v-if="card.burn> 0">[Burn {{card.burn}}]</span>
+            </p>
+            @*<card-text></card-text>*@
+            <blockquote v-if="card.text">
+                <ul style="list-style-type:none">
+                    <li v-for="t in card.text">{{t}}</li>
+                </ul>
+            </blockquote>
+            <p>
+                <span v-if="card.maxCopies">[Max {{card.maxCopies}}]</span>
+            </p>
+        </div>
+    </div>
+</div>
+<script src="~/lib/vue/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/vue.resource/1.2.1/vue-resource.min.js"></script>
+<script>
+    var join = function (strings, joiner)
+    { 
+        var result = strings[0];
+        for (var i = 1; i < strings.length; i++) {
+            result = result + joiner + strings[i];
+        }
+        return result;
+    };
+
+    Vue.filter("toActionIcons", function (actionIcons) {
+        var result = actionIcons.slice();
+        for (var i = 0; i < result.length; i++) {
+            switch (result[i]) {
+                case "Activate":
+                    result[i] = "A";
+                    break;
+                case "Exploit":
+                    result[i] = "E";
+                    break;
+                case "Maneuver":
+                    result[i] = "M";
+                    break;
+            }
+        } 
+        return join(result, ' ');
+    });
+    Vue.filter("toShipSelection", function (value) {
+        switch (value) {
+            case "Mandatory":
+                return "Man";
+            case "Optional":
+                return "Opt";
+        }
+    });
+    Vue.filter("toUpper", function (value) {
+        return value.toString().toUpperCase();
+    });
+    Vue.component('card-text', {
+        template: '<blockquote v-if="card.text"><ul style="list-style-type:none" ><li v-for="t in card.text">{{ t }}</li></ul></blockquote>'
+    })
+    const v = new Vue({
+        el: '#app',
+        data: {
+            card: ""
+        },
+        created: function () {
+            var url = window.location.href.toString();
+            var index = url.lastIndexOf("/");
+            var id = url.substring(index + 1);
+            // GET /someUrl
+            Vue.http.get('/api/CardData/' + id)
+                .then(response => {
+
+                    // get body data
+                    this.$data.card = response.body;
+                }, response => {
+                    // error callback
+                });
+        },
+    });
+
+</script>
+
