@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="nodb_storage\**" />
+    <Content Remove="nodb_storage\**" />
+    <EmbeddedResource Remove="nodb_storage\**" />
+    <None Remove="nodb_storage\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="ViewModels\Cards\main.js" />
   </ItemGroup>
 

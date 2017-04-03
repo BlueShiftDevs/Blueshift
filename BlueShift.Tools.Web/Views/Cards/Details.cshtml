@@ -2,44 +2,47 @@
     ViewData["Title"] = "Card Details";
 }
 <div id="app">
-    <h2>{{card.name}}</h2>
-    <div>
-        <h4 v-if="card.title"><em>{{card.title}}</em></h4>
-        <p>{{card.type | toUpper}}<span v-if="card.subtypes">:<span v-for="st in card.subtypes"> {{st}} </span></span></p>
-        <div v-if="card.type === 'Asset' || card.type === 'Crew' || card.type === 'Upgrade'">
-            <p>
-                <span>[${{card.resourceCost}}]</span>
-                <span v-if="card.icons">[{{card.icons | toActionIcons}}]</span>
-                <span v-if="card.burn">[Burn {{card.burn}}]</span>
-            </p>
-            @*<card-text></card-text>*@
-            <blockquote v-if="card.text">
-                <ul style="list-style-type:none">
-                    <li v-for="t in card.text">{{t}}</li>
-                </ul>
-            </blockquote>
-            <p>
-                <span v-if="card.control">[Control {{card.control}}]</span>
-                <span v-if="card.hull">[Hull {{card.hull}}]</span>
-                <span v-if="card.maxCopies">[Max {{card.maxCopies}}]</span>
-            </p>
-        </div>
-        <div v-if="card.type === 'Event'">
-            <p>
-                <span>[{{card.actionCost | toActionIcon}}]</span>
-                <span>[${{card.resourceCost}}]</span>
-                <span v-if="card.shipSelections">[<span v-for="s in card.shipSelections">{{s | toShipSelection}} </span>]</span>
-                <span v-if="card.burn> 0">[Burn {{card.burn}}]</span>
-            </p>
-            @*<card-text></card-text>*@
-            <blockquote v-if="card.text">
-                <ul style="list-style-type:none">
-                    <li v-for="t in card.text">{{t}}</li>
-                </ul>
-            </blockquote>
-            <p>
-                <span v-if="card.maxCopies">[Max {{card.maxCopies}}]</span>
-            </p>
+    <h2 v-if="error">{{error}}</h2>
+    <div v-if="!error">
+        <h2>{{card.name}}</h2>
+        <div>
+            <h4 v-if="card.title"><em>{{card.title}}</em></h4>
+            <p>{{card.type | toUpper}}<span v-if="card.subtypes">:<span v-for="st in card.subtypes"> {{st}} </span></span></p>
+            <div v-if="card.type === 'Asset' || card.type === 'Crew' || card.type === 'Upgrade'">
+                <p>
+                    <span>[${{card.resourceCost}}]</span>
+                    <span v-if="card.icons">[{{card.icons | toActionIcons}}]</span>
+                    <span v-if="card.burn">[Burn {{card.burn}}]</span>
+                </p>
+                @*<card-text></card-text>*@
+                <blockquote v-if="card.text">
+                    <ul style="list-style-type:none">
+                        <li v-for="t in card.text">{{t}}</li>
+                    </ul>
+                </blockquote>
+                <p>
+                    <span v-if="card.control">[Control {{card.control}}]</span>
+                    <span v-if="card.hull">[Hull {{card.hull}}]</span>
+                    <span v-if="card.maxCopies">[Max {{card.maxCopies}}]</span>
+                </p>
+            </div>
+            <div v-if="card.type === 'Event'">
+                <p>
+                    <span>[{{card.actionCost | toActionIcon}}]</span>
+                    <span>[${{card.resourceCost}}]</span>
+                    <span v-if="card.shipSelections">[<span v-for="s in card.shipSelections">{{s | toShipSelection}} </span>]</span>
+                    <span v-if="card.burn> 0">[Burn {{card.burn}}]</span>
+                </p>
+                @*<card-text></card-text>*@
+                <blockquote v-if="card.text">
+                    <ul style="list-style-type:none">
+                        <li v-for="t in card.text">{{t}}</li>
+                    </ul>
+                </blockquote>
+                <p>
+                    <span v-if="card.maxCopies">[Max {{card.maxCopies}}]</span>
+                </p>
+            </div>
         </div>
     </div>
 </div>
@@ -89,7 +92,8 @@
     const v = new Vue({
         el: '#app',
         data: {
-            card: ""
+            card: null,
+            error: null
         },
         created: function () {
             var url = window.location.href.toString();
@@ -98,11 +102,12 @@
             // GET /someUrl
             Vue.http.get('/api/CardData/' + id)
                 .then(response => {
-
-                    // get body data
-                    this.$data.card = response.body;
+                    if (response.status != 200)
+                        this.$data.error = response.body;
+                    else
+                        this.$data.card = response.body;
                 }, response => {
-                    // error callback
+                    this.$data.error = response.body.error;
                 });
         },
     });

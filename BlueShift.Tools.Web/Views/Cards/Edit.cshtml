@@ -1,0 +1,169 @@
+<div id="app">
+    <h2>Edit Card ID {{card.id}}: {{card.name}}<em v-if="card.title">, {{card.title}}</em></h2>
+    <div>
+        <label>Id</label>
+        <input v-model="card.id" />
+    </div>
+    <div>
+        <label>Name</label>
+        <input v-model="card.name" />
+    </div>
+    <div>
+        <label>Title</label>
+        <input v-model="card.title" />
+    </div>
+    <div>
+        <label>Type</label>
+        <select v-model="card.type">
+            <option>Asset</option>
+            <option>Crew</option>
+            <option>Event</option>
+            <option>Upgrade</option>
+            <option>Capital Ship</option>
+            <option>Fleet</option>
+            <option>Location</option>
+        </select>
+    </div>
+    <div>
+        <label>Subtypes</label>
+        <textarea v-model="card.subtypesTextAreaValue"></textarea>
+    </div>
+    <div>
+        <label>Text</label>
+        <textarea v-model="card.textTextAreaValue"></textarea>
+    </div>
+    <div v-if="showIfCardType(['Asset', 'Crew','Event','Upgrade'])">
+        <label>Resource Cost</label>
+        <input type="number" v-model.number="card.resourceCost" />
+    </div>
+    <div v-if="showIfCardType(['Event'])">
+        <label>Ship Selections</label>
+        <textarea v-model="card.shipSelectionsTextAreaValue"></textarea>
+    </div>
+    <div v-if="showIfCardType(['Event'])">
+        <label>Action Cost</label>
+        <select v-model="card.actionCost">
+            <option>Activate</option>
+            <option>Exploit</option>
+            <option>Maneuver</option>
+        </select>
+    </div>
+    <div v-if="showIfCardType(['Asset', 'Crew','Upgrade'])">
+        <label>Icons</label>
+        <input type="checkbox" id="activateIcon" value="Activate" v-model="card.icons" />
+        <label for="activateIcon">Activate</label>
+        <input type="checkbox" id="exploitIcon" value="Exploit" v-model="card.icons" />
+        <label for="exploitIcon">Exploit</label>
+        <input type="checkbox" id="maneuverIcon" value="Maneuver" v-model="card.icons" />
+        <label for="maneuverIcon">Maneuver</label>
+    </div>
+    <div v-if="showIfCardType(['Asset', 'Crew','Event','Upgrade'])">
+        <label>Burn</label>
+        <input type="number" v-model.number="card.burn" />
+    </div>
+    <div v-if="showIfCardType(['Asset', 'Crew','Upgrade','Capital Ship','Location'])">
+        <label>Control</label>
+        <input type="number" v-model.number="card.control" />
+    </div>
+    <div v-if="showIfCardType(['Asset', 'Upgrade', 'Capital Ship'])">
+        <label>Hull</label>
+        <input type="number" v-model.number="card.hull" />
+    </div>
+    <div v-if="showIfCardType(['Location'])">
+        <label>Exploits</label>
+        <input type="number" v-model.number="card.exploits" />
+    </div>
+    <div v-if="showIfCardType(['Upgrade', 'Capital Ship'])">
+        <label>Reactor</label>
+        <input type="number" v-model.number="card.reactor" />
+    </div>
+    <div v-if="showIfCardType(['Fleet'])">
+        <label>Fleet Deck Size</label>
+        <input type="number" v-model.number="card.fleetDeckSize" />
+    </div>
+    <div v-if="showIfCardType(['Asset', 'Crew','Event','Upgrade'])">
+        <label>Max Copies in Fleet Deck</label>
+        <input type="number" v-model.number="card.maxCopies" />
+    </div>
+    <div v-if="showIfCardType(['Fleet'])">
+        <label>Strategy Deck Size</label>
+        <input type="number" v-model.number="card.strategyDeckSize" />
+    </div>
+    <div v-if="showIfCardType(['Fleet'])">
+        <label>Strategy Refresh Rate</label>
+        <input type="number" v-model.number="card.strategyRefresh" />
+    </div>
+    <div v-if="showIfCardType(['Location'])">
+        <label>Scanner Object Size</label>
+        <select v-model="card.scannerSize">
+            <option>Small</option>
+            <option>Medium</option>
+            <option>Large</option>
+            <option>Anomaly</option>
+        </select>
+    </div>
+    <div>
+        <button v-on:click="submit()">Submit</button>
+    </div>
+</div>
+
+<script src="~/lib/vue/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/vue.resource/1.2.1/vue-resource.min.js"></script>
+<script>
+    const v = new Vue({
+        el: '#app',
+        data: {
+            card: null,
+            error: null
+        },
+        methods: {
+            showIfCardType: function (validTypes) {
+                return validTypes.some(function (type) {
+                    return type === v.$data.card.type;
+                });
+            },
+            submit: function () {
+                // pull proxies back out into string arrays
+                this.card.subtypes = this.card.subtypesTextAreaValue.split('\n');
+                this.card.text = this.card.textTextAreaValue.split('\n');
+                this.card.shipSelections = this.card.shipSelectionsTextAreaValue.split('\n');
+                this.card.icons = this.card.iconsTextAreaValue.split('\n');
+                // add final send-off validation here (probably don't need much)
+                Vue.http.put('/api/CardData/' + this.card.id, this.card);
+                // add error handling and post-success navigation
+            }
+        },
+        created: function () {
+            var url = window.location.href.toString();
+            var index = url.lastIndexOf("/");
+            var id = url.substring(index + 1);
+            // GET /someUrl
+            Vue.http.get('/api/CardData/' + id)
+                .then(response => {
+                    if (response.status != 200)
+                        this.$data.error = response.body;
+                    else {
+                        this.$data.card = response.body;
+                        //assign proxies for text fields
+                        if (this.$data.card.subtypes) this.$data.card.subtypesTextAreaValue = this.$data.card.subtypes.join('\n');
+                        if (this.$data.card.text) this.$data.card.textTextAreaValue = this.$data.card.text.join('\n');
+                        if (this.$data.card.shipSelections) this.$data.card.shipSelectionsTextAreaValue = this.$data.card.shipSelections.join('\n');
+                        if (this.$data.card.icons) this.$data.card.iconsTextAreaValue = this.$data.card.icons.join('\n');
+                    }
+                }, response => {
+                    this.$data.error = response.body.error;
+                });
+        }
+    });
+
+    //var showIfCardType = function (validTypes) {
+    //    return validTypes.some(function (type) {
+    //        return type === v.$data.card.type;
+    //    });
+    //}
+</script>
+<style>
+    ul {
+        width: 100%
+    }
+</style>
