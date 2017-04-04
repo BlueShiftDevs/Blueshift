@@ -1,5 +1,5 @@
 <div id="app">
-    <h2>Edit Card ID {{card.id}}: {{card.name}}<em v-if="card.title">, {{card.title}}</em></h2>
+    <h2>Add New Card</h2>
     <div>
         <label>Id</label>
         <input v-model="card.id" />
@@ -113,7 +113,31 @@
     const v = new Vue({
         el: '#app',
         data: {
-            card: null,
+            card: {
+                id: null,
+                name: "New Card",
+                title: null,
+                type: null,
+                subtypes: null,
+                text: null,
+                resourceCost: 0,
+                shipSelections: null,
+                actionCost: null,
+                icons: [],
+                burn: 2,
+                control: 0,
+                hull: 0,
+                exploits: 0,
+                reactor: 0,
+                fleetDeckSize: 30,
+                maxCopies: 2,
+                strategyDeckSize: 6,
+                strategyRefresh: 3,
+                scannerSize: null,
+                subtypesTextAreaValue: "",
+                textTextAreaValue: "",
+                shipSelectionsTextAreaValue: "",
+            },
             error: null
         },
         methods: {
@@ -129,30 +153,31 @@
                 this.card.text = this.card.textTextAreaValue.split('\n');
                 this.card.shipSelections = this.card.shipSelectionsTextAreaValue.split('\n');
                 // add final send-off validation here (probably don't need much)
-                Vue.http.put('/api/CardData/' + this.card.id, this.card);
+                Vue.http.post('/api/CardData/', this.card);
                 // add error handling and post-success navigation
             }
         },
-        created: function () {
-            var url = window.location.href.toString();
-            var index = url.lastIndexOf("/");
-            var id = url.substring(index + 1);
-            // GET /someUrl
-            Vue.http.get('/api/CardData/' + id)
-                .then(response => {
-                    if (response.status != 200)
-                        this.$data.error = response.body;
-                    else {
-                        this.$data.card = response.body;
-                        //assign proxies for text fields
-                        if (this.$data.card.subtypes) this.$data.card.subtypesTextAreaValue = this.$data.card.subtypes.join('\n');
-                        if (this.$data.card.text) this.$data.card.textTextAreaValue = this.$data.card.text.join('\n');
-                        if (this.$data.card.shipSelections) this.$data.card.shipSelectionsTextAreaValue = this.$data.card.shipSelections.join('\n');
-                    }
-                }, response => {
-                    this.$data.error = response.body.error;
-                });
-        }
+        //created: function () {
+        //    //var url = window.location.href.toString();
+        //    //var index = url.lastIndexOf("/");
+        //    //var id = url.substring(index + 1);
+        //    // GET /someUrl
+        //    //Vue.http.get('/api/CardData/' + id)
+        //    //    .then(response => {
+        //    //        if (response.status != 200)
+        //    //            this.$data.error = response.body;
+        //    //        else {
+        //    //            this.$data.card = response.body;
+        //    //            //assign proxies for text fields
+        //    //            if (this.$data.card.subtypes) this.$data.card.subtypesTextAreaValue = this.$data.card.subtypes.join('\n');
+        //    //            if (this.$data.card.text) this.$data.card.textTextAreaValue = this.$data.card.text.join('\n');
+        //    //            if (this.$data.card.shipSelections) this.$data.card.shipSelectionsTextAreaValue = this.$data.card.shipSelections.join('\n');
+        //    //        }
+        //    //    }, response => {
+        //    //        this.$data.error = response.body.error;
+        //    //    });
+        //    this.card.name = "New Card";
+        //}
     });
 </script>
 <style>

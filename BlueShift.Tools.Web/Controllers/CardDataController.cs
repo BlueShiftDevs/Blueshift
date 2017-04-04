@@ -72,9 +72,9 @@ namespace BlueShift.Tools.Web.Controllers
 
         // POST: api/CardData
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]string value)
+        public async Task<IActionResult> Post([FromBody]object value)
         {
-            var card = JsonConvert.DeserializeObject<Card>(value);
+            var card = JsonConvert.DeserializeObject<Card>(value.ToString());
 
             if (card != null)
             {
