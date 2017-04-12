@@ -16,6 +16,7 @@ namespace BlueShift.Tools.Web.Extensions
             original.Burn = card.Burn ?? original.Burn;
             original.Control = card.Control ?? original.Control;
             original.Exploits = card.Exploits ?? original.Exploits;
+            original.Faction = card.Faction ?? original.Faction;
             original.FleetDeckSize = card.FleetDeckSize ?? original.FleetDeckSize;
             original.Hull = card.Hull ?? original.Hull;
             original.Icons = card.Icons ?? original.Icons;

@@ -28,6 +28,15 @@
         <label>Subtypes</label>
         <textarea v-model="card.subtypesTextAreaValue"></textarea>
     </div>
+    <div v-if="showIfCardType(['Asset','Crew','Event','Upgrade','Capital Ship','Fleet'])">
+        <label>Faction</label>
+        <select v-model="card.faction">
+            <option>Synedrion</option>
+            <option>Independents</option>
+            <option>TechnoZealots</option>
+            <option>Neutral</option>
+        </select>
+    </div>
     <div>
         <label>Text</label>
         <textarea v-model="card.textTextAreaValue"></textarea>
@@ -120,6 +129,7 @@
                 type: null,
                 subtypes: null,
                 text: null,
+                faction: null,
                 resourceCost: 0,
                 shipSelections: null,
                 actionCost: null,

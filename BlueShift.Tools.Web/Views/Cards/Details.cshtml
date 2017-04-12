@@ -8,6 +8,7 @@
         <div>
             <h4 v-if="card.title"><em>{{card.title}}</em></h4>
             <p>{{card.type | toUpper}}<span v-if="card.subtypes">:<span v-for="st in card.subtypes"> {{st}} </span></span></p>
+            <p v-if="card.faction">{{card.faction}}</p>
             <div v-if="card.type === 'Asset' || card.type === 'Crew' || card.type === 'Upgrade'">
                 <p>
                     <span>[${{card.resourceCost}}]</span>

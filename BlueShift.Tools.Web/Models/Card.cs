@@ -12,6 +12,7 @@ namespace BlueShift.Tools.Web.Models
         public string Type { get; set; }
         public string[] Subtypes { get; set; }
         public string[] Text { get; set; }
+        public string Faction { get; set; }
 
         public int? ResourceCost { get; set; }
         public string[] ShipSelections { get; set; }
@@ -29,5 +30,8 @@ namespace BlueShift.Tools.Web.Models
         public int? StrategyDeckSize { get; set; }
         public int? StrategyRefresh { get; set; }
         public string ScannerSize { get; set; }
+
+        //move these to separate services/models later
+        public string Comments { get; set; }
     }
 }
