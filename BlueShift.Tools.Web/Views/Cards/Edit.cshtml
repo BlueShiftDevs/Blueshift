@@ -45,10 +45,10 @@
         <label>Resource Cost</label>
         <input type="number" v-model.number="card.resourceCost" />
     </div>
-    <div v-if="showIfCardType(['Event'])">
+    @*<div v-if="showIfCardType(['Event'])">
         <label>Ship Selections</label>
         <textarea v-model="card.shipSelectionsTextAreaValue"></textarea>
-    </div>
+    </div>*@
     <div v-if="showIfCardType(['Event'])">
         <label>Action Cost</label>
         <select v-model="card.actionCost">
@@ -134,15 +134,16 @@
             },
             submit: function () {
                 // pull proxies back out into string arrays
-                this.card.subtypes = this.card.subtypesTextAreaValue.split('\n');
-                this.card.text = this.card.textTextAreaValue.split('\n');
-                this.card.shipSelections = this.card.shipSelectionsTextAreaValue.split('\n');
+                this.card.subtypes = this.card.subtypesTextAreaValue.length > 0 ? this.card.subtypesTextAreaValue.split('\n') : null;
+                this.card.text = this.card.textTextAreaValue.length > 0 ? this.card.textTextAreaValue.split('\n') : null;
+                //this.card.shipSelections = this.card.shipSelectionsTextAreaValue.split('\n');
                 // add final send-off validation here (probably don't need much)
                 Vue.http.put('/api/CardData/' + this.card.id, this.card);
                 // add error handling and post-success navigation
             }
         },
         created: function () {
+            var vue = this;
             var url = window.location.href.toString();
             var index = url.lastIndexOf("/");
             var id = url.substring(index + 1);
@@ -150,16 +151,16 @@
             Vue.http.get('/api/CardData/' + id)
                 .then(response => {
                     if (response.status != 200)
-                        this.$data.error = response.body;
+                        vue.error = response.body;
                     else {
-                        this.$data.card = response.body;
+                        vue.card = response.body;
                         //assign proxies for text fields
-                        if (this.$data.card.subtypes) this.$data.card.subtypesTextAreaValue = this.$data.card.subtypes.join('\n');
-                        if (this.$data.card.text) this.$data.card.textTextAreaValue = this.$data.card.text.join('\n');
-                        if (this.$data.card.shipSelections) this.$data.card.shipSelectionsTextAreaValue = this.$data.card.shipSelections.join('\n');
+                        if (vue.card.subtypes) vue.card.subtypesTextAreaValue = vue.card.subtypes.join('\n');
+                        if (vue.card.text) vue.card.textTextAreaValue = vue.card.text.join('\n');
+                        //if (vue.card.shipSelections) vue.card.shipSelectionsTextAreaValue = vue.card.shipSelections.join('\n');
                     }
                 }, response => {
-                    this.$data.error = response.body.error;
+                    vue.error = response.body.error;
                 });
         }
     });

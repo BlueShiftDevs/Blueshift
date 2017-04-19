@@ -4,16 +4,17 @@
 <div id="app">
     <h2 v-if="error">{{error}}</h2>
     <div v-if="!error">
+        <h4>{{card.id}}</h4>
         <h2>{{card.name}}</h2>
         <div>
             <h4 v-if="card.title"><em>{{card.title}}</em></h4>
-            <p>{{card.type | toUpper}}<span v-if="card.subtypes">:<span v-for="st in card.subtypes"> {{st}} </span></span></p>
-            <p v-if="card.faction">{{card.faction}}</p>
+            <p>{{card.type | toUpper}}<span v-if="card.subtypes && card.subtypes.length > 0">: {{join(card.subtypes, ' - ')}}</span></p>
+            <p v-if="card.faction && card.type != 'Location'">{{card.faction}}</p>
             <div v-if="card.type === 'Asset' || card.type === 'Crew' || card.type === 'Upgrade'">
                 <p>
                     <span>[${{card.resourceCost}}]</span>
                     <span v-if="card.icons">[{{card.icons | toActionIcons}}]</span>
-                    <span v-if="card.burn">[Burn {{card.burn}}]</span>
+                    <span v-if="card.burn && card.burn > 0">[Burn {{card.burn}}]</span>
                 </p>
                 @*<card-text></card-text>*@
                 <blockquote v-if="card.text">
@@ -22,17 +23,18 @@
                     </ul>
                 </blockquote>
                 <p>
-                    <span v-if="card.control">[Control {{card.control}}]</span>
-                    <span v-if="card.hull">[Hull {{card.hull}}]</span>
-                    <span v-if="card.maxCopies">[Max {{card.maxCopies}}]</span>
+                    <span v-if="card.hull && card.hull > 0">[Hull {{card.hull}}]</span>
+                    <span v-if="card.control && card.control > 0">[Control {{card.control}}]</span>                    
+                    <span v-if="card.exploits && card.exploits > 0">[Exploits {{card.exploits}}]</span>
+                    <span v-if="card.maxCopies && card.maxCopies != 2">[Max {{card.maxCopies}}]</span>              
                 </p>
             </div>
             <div v-if="card.type === 'Event'">
                 <p>
                     <span>[{{card.actionCost | toActionIcon}}]</span>
                     <span>[${{card.resourceCost}}]</span>
-                    <span v-if="card.shipSelections">[<span v-for="s in card.shipSelections">{{s | toShipSelection}} </span>]</span>
-                    <span v-if="card.burn> 0">[Burn {{card.burn}}]</span>
+                    @*<span v-if="card.shipSelections">[<span v-for="s in card.shipSelections">{{s | toShipSelection}} </span>]</span>*@
+                    <span v-if="card.burn && card.burn > 0">[Burn {{card.burn}}]</span>
                 </p>
                 @*<card-text></card-text>*@
                 <blockquote v-if="card.text">
@@ -42,6 +44,46 @@
                 </blockquote>
                 <p>
                     <span v-if="card.maxCopies">[Max {{card.maxCopies}}]</span>
+                </p>
+            </div>
+            <div v-if="card.type === 'Fleet'">
+                <p>
+                    <span v-if="card.fleetDeckSize">[Fleet {{card.fleetDeckSize}}]</span>
+                    <span v-if="card.strategyRefresh && card.strategyDeckSize">[Strategies {{card.strategyRefresh}}/{{card.strategyDeckSize}}]</span>
+                </p>
+                @*<card-text></card-text>*@
+                <blockquote v-if="card.text">
+                    <ul style="list-style-type:none">
+                        <li v-for="t in card.text">{{t}}</li>
+                    </ul>
+                </blockquote>
+            </div>
+            <div v-if="card.type === 'Capital Ship'">
+                @*<card-text></card-text>*@
+                <blockquote v-if="card.text">
+                    <ul style="list-style-type:none">
+                        <li v-for="t in card.text">{{t}}</li>
+                    </ul>
+                </blockquote>
+                <p>
+                    <span v-if="card.hull && card.hull > 0">[Hull {{card.hull}}]</span>
+                    <span v-if="card.control && card.control > 0">[Control {{card.control}}]</span>                    
+                    <span v-if="card.reactor && card.reactor > 0">[Reactor {{card.reactor}}]</span>
+                </p>
+            </div>
+            <div v-if="card.type === 'Location'">
+                <p>
+                    <span v-if="card.scannerSize">[{{card.scannerSize}} Scan]</span>
+                </p>
+                @*<card-text></card-text>*@
+                <blockquote v-if="card.text">
+                    <ul style="list-style-type:none">
+                        <li v-for="t in card.text">{{t}}</li>
+                    </ul>
+                </blockquote>
+                <p>
+                    <span v-if="card.exploits && card.exploits > 0">[Exploits {{card.exploits}}]</span>
+                    <span v-if="card.control && card.control > 0">[Control {{card.control}}]</span>  
                 </p>
             </div>
         </div>
@@ -50,15 +92,14 @@
 <script src="~/lib/vue/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/vue.resource/1.2.1/vue-resource.min.js"></script>
 <script>
-    var join = function (strings, joiner)
-    { 
+    var join = function (strings, joiner) {
         var result = strings[0];
         for (var i = 1; i < strings.length; i++) {
             result = result + joiner + strings[i];
         }
         return result;
     };
-
+     
     Vue.filter("toActionIcons", function (actionIcons) {
         var result = actionIcons.slice();
         for (var i = 0; i < result.length; i++) {
@@ -76,14 +117,14 @@
         } 
         return join(result, ' ');
     });
-    Vue.filter("toShipSelection", function (value) {
-        switch (value) {
-            case "Mandatory":
-                return "Man";
-            case "Optional":
-                return "Opt";
-        }
-    });
+    //Vue.filter("toShipSelection", function (value) {
+    //    switch (value) {
+    //        case "Mandatory":
+    //            return "Man";
+    //        case "Optional":
+    //            return "Opt";
+    //    }
+    //});
     Vue.filter("toUpper", function (value) {
         return value.toString().toUpperCase();
     });
@@ -111,6 +152,21 @@
                     this.$data.error = response.body.error;
                 });
         },
+        methods: {
+            showIfCardType: function (validTypes) {
+                var targetType = this.card.type;
+                return validTypes.some(function (type) {
+                    return type === targetType;
+                });
+            },
+            join: function (strings, joiner) {
+                var result = strings[0];
+                for (var i = 1; i < strings.length; i++) {
+                    result = result + joiner + strings[i];
+                }
+                return result;
+            }
+        }
     });
 
 </script>

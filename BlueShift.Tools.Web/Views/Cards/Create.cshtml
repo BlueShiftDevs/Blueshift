@@ -45,10 +45,10 @@
         <label>Resource Cost</label>
         <input type="number" v-model.number="card.resourceCost" />
     </div>
-    <div v-if="showIfCardType(['Event'])">
+    @*<div v-if="showIfCardType(['Event'])">
         <label>Ship Selections</label>
         <textarea v-model="card.shipSelectionsTextAreaValue"></textarea>
-    </div>
+    </div>*@
     <div v-if="showIfCardType(['Event'])">
         <label>Action Cost</label>
         <select v-model="card.actionCost">
@@ -131,7 +131,7 @@
                 text: null,
                 faction: null,
                 resourceCost: 0,
-                shipSelections: null,
+                //shipSelections: null,
                 actionCost: null,
                 icons: [],
                 burn: 2,
@@ -159,9 +159,11 @@
             },
             submit: function () {
                 // pull proxies back out into string arrays
-                this.card.subtypes = this.card.subtypesTextAreaValue.split('\n');
-                this.card.text = this.card.textTextAreaValue.split('\n');
-                this.card.shipSelections = this.card.shipSelectionsTextAreaValue.split('\n');
+                this.card.subtypes = this.card.subtypesTextAreaValue.length > 0 ? this.card.subtypesTextAreaValue.split('\n') : null;
+                this.card.text = this.card.textTextAreaValue.length > 0 ? this.card.textTextAreaValue.split('\n') : null;
+                //this.card.subtypes = this.card.subtypesTextAreaValue.split('\n');
+                //this.card.text = this.card.textTextAreaValue.split('\n');
+                //this.card.shipSelections = this.card.shipSelectionsTextAreaValue.split('\n');
                 // add final send-off validation here (probably don't need much)
                 Vue.http.post('/api/CardData/', this.card);
                 // add error handling and post-success navigation
