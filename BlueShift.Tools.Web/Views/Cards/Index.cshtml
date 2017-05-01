@@ -5,7 +5,43 @@
 <h2>@ViewData["Title"]</h2>
 <div id="app">
     <div>
-        <p v-for="card in cards"><a v-bind:href="card.detailsLink">{{card.name}}</a><span v-if="card.title"><em> {{card.title}}</em></span></p>
+        <h3>Type Filter</h3>
+        <label>Assets</label>
+        <input type="checkbox" id="assetFilter" value="Asset" v-model="typeFilter" />
+        <label>Crew</label>
+        <input type="checkbox" id="crewFilter" value="Crew" v-model="typeFilter" />
+        <label>Events</label>
+        <input type="checkbox" id="eventFilter" value="Event" v-model="typeFilter" />
+        <label>Upgrades</label>
+        <input type="checkbox" id="upgradeFilter" value="Upgrade" v-model="typeFilter" />
+        <label>Fleets</label>
+        <input type="checkbox" id="fleetFilter" value="Fleet" v-model="typeFilter" />
+        <label>Strategies</label>
+        <input type="checkbox" id="strategyFilter" value="Strategy" v-model="typeFilter" />
+        <label>Capital Ships</label>
+        <input type="checkbox" id="capitalShipFilter" value="Capital Ship" v-model="typeFilter" />
+        <label>Locations</label>
+        <input type="checkbox" id="locationFilter" value="Location" v-model="typeFilter" />
+    </div>
+    <div>
+        <h3>Faction Filter</h3>
+        <label>Neutral</label>
+        <input type="checkbox" id="neutralFilter" value="Neutral" v-model="factionFilter" />
+        <label>Synedrion</label>
+        <input type="checkbox" id="synedrionFilter" value="Synedrion" v-model="factionFilter" />
+        <label>Independents</label>
+        <input type="checkbox" id="independentsFilter" value="Independents" v-model="factionFilter" />
+        <label>TechnoZealots</label>
+        <input type="checkbox" id="technoZealotsFilter" value="TechnoZealots" v-model="factionFilter" />
+        <label>No Faction</label>
+        <input type="checkbox" id="noneFilter" value="None" v-model="factionFilter" />
+    </div>
+    <div>
+        <p v-for="card in cards" v-if="filterByType(card) && filterByFaction(card)">
+            <a v-bind:href="card.detailsLink">{{card.name}}</a>
+            <span v-if="card.title"><em> {{card.title}}</em></span>
+            <span> [{{card.id}}]</span>
+        </p>
     </div>
 </div>
 <script src="~/lib/vue/dist/vue.min.js"></script>
@@ -14,17 +50,33 @@
     const v = new Vue({
         el: '#app',
         data: {
-            cards: []
+            cards: [],
+            typeFilter: ['Asset', 'Crew', 'Event', 'Upgrade', 'Fleet', 'Strategy', 'Capital Ship', 'Location'],
+            factionFilter: [ 'Neutral','None','Synedrion','Independents','TechnoZealots' ]
+        },
+        methods: {
+            filterByType: function (card) {
+                return this.typeFilter.some(function (t) {
+                    return t === card.type;
+                });
+            },
+            filterByFaction: function (card) {
+                if (this.factionFilter.indexOf('None') != -1 && !card.faction)
+                    return true;
+                return this.factionFilter.some(function (f) {
+                    return f === card.faction;
+                });
+            }
         },
         created: function () {
             // GET /someUrl
+            var vue = this;
             Vue.http.get('/api/CardData')
                 .then(response => {
 
                     // get body data
-                    this.$data.cards = response.body;
-                    for (card of this.$data.cards)
-                    {
+                    vue.cards = response.body;
+                    for (card of vue.cards) {
                         card.detailsLink = "/cards/Details/" + card.id;
                     }
 

@@ -1,118 +1,139 @@
 <div id="app">
-    <h2>Edit Card ID {{card.id}}: {{card.name}}<em v-if="card.title">, {{card.title}}</em></h2>
-    <div>
-        <label>Id</label>
-        <input v-model="card.id" />
-    </div>
-    <div>
-        <label>Name</label>
-        <input v-model="card.name" />
-    </div>
-    <div>
-        <label>Title</label>
-        <input v-model="card.title" />
-    </div>
-    <div>
-        <label>Type</label>
-        <select v-model="card.type">
-            <option>Asset</option>
-            <option>Crew</option>
-            <option>Event</option>
-            <option>Upgrade</option>
-            <option>Capital Ship</option>
-            <option>Fleet</option>
-            <option>Location</option>
-        </select>
-    </div>
-    <div>
-        <label>Subtypes</label>
-        <textarea v-model="card.subtypesTextAreaValue"></textarea>
-    </div>
-    <div v-if="showIfCardType(['Asset','Crew','Event','Upgrade','Capital Ship','Fleet'])">
-        <label>Faction</label>
-        <select v-model="card.faction">
-            <option>Synedrion</option>
-            <option>Independents</option>
-            <option>TechnoZealots</option>
-            <option>Neutral</option>
-        </select>
-    </div>
-    <div>
-        <label>Text</label>
-        <textarea v-model="card.textTextAreaValue"></textarea>
-    </div>
-    <div v-if="showIfCardType(['Asset', 'Crew','Event','Upgrade'])">
-        <label>Resource Cost</label>
-        <input type="number" v-model.number="card.resourceCost" />
-    </div>
-    @*<div v-if="showIfCardType(['Event'])">
-        <label>Ship Selections</label>
-        <textarea v-model="card.shipSelectionsTextAreaValue"></textarea>
-    </div>*@
-    <div v-if="showIfCardType(['Event'])">
-        <label>Action Cost</label>
-        <select v-model="card.actionCost">
-            <option>Activate</option>
-            <option>Exploit</option>
-            <option>Maneuver</option>
-        </select>
-    </div>
-    <div v-if="showIfCardType(['Asset', 'Crew','Upgrade'])">
-        <label>Icons</label>
-        <input type="checkbox" id="activateIcon" value="Activate" v-model="card.icons" />
-        <label for="activateIcon">Activate</label>
-        <input type="checkbox" id="exploitIcon" value="Exploit" v-model="card.icons" />
-        <label for="exploitIcon">Exploit</label>
-        <input type="checkbox" id="maneuverIcon" value="Maneuver" v-model="card.icons" />
-        <label for="maneuverIcon">Maneuver</label>
-    </div>
-    <div v-if="showIfCardType(['Asset', 'Crew','Event','Upgrade'])">
-        <label>Burn</label>
-        <input type="number" v-model.number="card.burn" />
-    </div>
-    <div v-if="showIfCardType(['Asset', 'Crew','Upgrade','Capital Ship','Location'])">
-        <label>Control</label>
-        <input type="number" v-model.number="card.control" />
-    </div>
-    <div v-if="showIfCardType(['Asset', 'Upgrade', 'Capital Ship'])">
-        <label>Hull</label>
-        <input type="number" v-model.number="card.hull" />
-    </div>
-    <div v-if="showIfCardType(['Location'])">
-        <label>Exploits</label>
-        <input type="number" v-model.number="card.exploits" />
-    </div>
-    <div v-if="showIfCardType(['Upgrade', 'Capital Ship'])">
-        <label>Reactor</label>
-        <input type="number" v-model.number="card.reactor" />
-    </div>
-    <div v-if="showIfCardType(['Fleet'])">
-        <label>Fleet Deck Size</label>
-        <input type="number" v-model.number="card.fleetDeckSize" />
-    </div>
-    <div v-if="showIfCardType(['Asset', 'Crew','Event','Upgrade'])">
-        <label>Max Copies in Fleet Deck</label>
-        <input type="number" v-model.number="card.maxCopies" />
-    </div>
-    <div v-if="showIfCardType(['Fleet'])">
-        <label>Strategy Deck Size</label>
-        <input type="number" v-model.number="card.strategyDeckSize" />
-    </div>
-    <div v-if="showIfCardType(['Fleet'])">
-        <label>Strategy Refresh Rate</label>
-        <input type="number" v-model.number="card.strategyRefresh" />
-    </div>
-    <div v-if="showIfCardType(['Location'])">
-        <label>Scanner Object Size</label>
-        <select v-model="card.scannerSize">
-            <option>Small</option>
-            <option>Medium</option>
-            <option>Large</option>
-            <option>Anomaly</option>
-        </select>
-    </div>
-    <div>
-        <button v-on:click="submit()">Submit</button>
+    <div v-if="card">
+        <h2>Edit Card ID {{card.id}}: {{card.name}}<em v-if="card.title">, {{card.title}}</em></h2>
+        <div>
+            <label>Id</label>
+            <input v-model="card.id" />
+        </div>
+        <div>
+            <label>Name</label>
+            <input v-model="card.name" />
+        </div>
+        <div>
+            <label>Title</label>
+            <input v-model="card.title" />
+        </div>
+        <div>
+            <label>Type</label>
+            <select v-model="card.type">
+                <option>Asset</option>
+                <option>Crew</option>
+                <option>Event</option>
+                <option>Upgrade</option>
+                <option>Capital Ship</option>
+                <option>Fleet</option>
+                <option>Location</option>
+                <option>Strategy</option>
+            </select>
+        </div>
+        <div>
+            <label>Subtypes</label>
+            <textarea v-model="card.subtypesTextAreaValue"></textarea>
+        </div>
+        <div v-if="showIfCardType(['Asset','Crew','Event','Upgrade','Capital Ship','Fleet','Strategy'])">
+            <label>Faction</label>
+            <select v-model="card.faction">
+                <option>Synedrion</option>
+                <option>Independents</option>
+                <option>TechnoZealots</option>
+                <option>Neutral</option>
+            </select>
+        </div>
+        <div>
+            <label>Text</label>
+            <textarea v-model="card.textTextAreaValue"></textarea>
+        </div>
+        <div v-if="showIfCardType(['Asset', 'Crew','Event','Upgrade'])">
+            <label>Resource Cost</label>
+            <input type="number" v-model.number="card.resourceCost" />
+        </div>
+        @*<div v-if="showIfCardType(['Event'])">
+                <label>Ship Selections</label>
+                <textarea v-model="card.shipSelectionsTextAreaValue"></textarea>
+            </div>*@
+        <div v-if="showIfCardType(['Event'])">
+            <label>Action Cost</label>
+            <select v-model="card.actionCost">
+                <option>Activate</option>
+                <option>Exploit</option>
+                <option>Maneuver</option>
+            </select>
+        </div>
+        <div v-if="showIfCardType(['Asset', 'Crew','Upgrade'])">
+            <label>Icons</label>
+            <input type="checkbox" id="activateIcon" value="Activate" v-model="card.icons" />
+            <label for="activateIcon">Activate</label>
+            <input type="checkbox" id="exploitIcon" value="Exploit" v-model="card.icons" />
+            <label for="exploitIcon">Exploit</label>
+            <input type="checkbox" id="maneuverIcon" value="Maneuver" v-model="card.icons" />
+            <label for="maneuverIcon">Maneuver</label>
+        </div>
+        <div v-if="showIfCardType(['Strategy'])">
+            <div>
+                <label>Activate Icons</label>
+                <input type="number" v-model="card.activateIcons" />
+            </div>
+            <div>
+                <label>Exploit Icons</label>
+                <input type="number" v-model="card.exploitIcons" />
+            </div>
+            <div>
+                <label>Maneuver Icons</label>
+                <input type="number" v-model="card.maneuverIcons" />
+            </div>
+            <div>
+                <label>Wildcard Icons</label>
+                <input type="number" v-model="card.wildcardIcons" />
+            </div>
+        </div>
+        <div v-if="showIfCardType(['Asset', 'Crew','Event','Upgrade','Strategy'])">
+            <label>Burn</label>
+            <input type="number" v-model.number="card.burn" />
+        </div>
+        <div v-if="showIfCardType(['Asset', 'Crew','Upgrade','Capital Ship','Location'])">
+            <label>Control</label>
+            <input type="number" v-model.number="card.control" />
+        </div>
+        <div v-if="showIfCardType(['Asset', 'Upgrade', 'Capital Ship'])">
+            <label>Hull</label>
+            <input type="number" v-model.number="card.hull" />
+        </div>
+        <div v-if="showIfCardType(['Location'])">
+            <label>Exploits</label>
+            <input type="number" v-model.number="card.exploits" />
+        </div>
+        <div v-if="showIfCardType(['Upgrade', 'Capital Ship'])">
+            <label>Reactor</label>
+            <input type="number" v-model.number="card.reactor" />
+        </div>
+        <div v-if="showIfCardType(['Fleet'])">
+            <label>Fleet Deck Size</label>
+            <input type="number" v-model.number="card.fleetDeckSize" />
+        </div>
+        <div v-if="showIfCardType(['Asset', 'Crew','Event','Upgrade'])">
+            <label>Max Copies in Fleet Deck</label>
+            <input type="number" v-model.number="card.maxCopies" />
+        </div>
+        <div v-if="showIfCardType(['Fleet'])">
+            <label>Strategy Deck Size</label>
+            <input type="number" v-model.number="card.strategyDeckSize" />
+        </div>
+        <div v-if="showIfCardType(['Fleet'])">
+            <label>Strategy Refresh Rate</label>
+            <input type="number" v-model.number="card.strategyRefresh" />
+        </div>
+        <div v-if="showIfCardType(['Location'])">
+            <label>Scanner Object Size</label>
+            <select v-model="card.scannerSize">
+                <option>Small</option>
+                <option>Medium</option>
+                <option>Large</option>
+                <option>Anomaly</option>
+            </select>
+        </div>
+        <div>
+            <button v-on:click="submit()">Submit</button>
+        </div>
     </div>
 </div>
 
@@ -136,6 +157,23 @@
                 // pull proxies back out into string arrays
                 this.card.subtypes = this.card.subtypesTextAreaValue.length > 0 ? this.card.subtypesTextAreaValue.split('\n') : null;
                 this.card.text = this.card.textTextAreaValue.length > 0 ? this.card.textTextAreaValue.split('\n') : null;
+                if (this.card.type === 'Strategy')
+                    this.card.icons = (function (a, e, m, w) { 
+                        var icons = [];
+                        for (var i = 0; i < a; i++) {
+                            icons.push('Activate');
+                        }
+                        for (var i = 0; i < e; i++) {
+                            icons.push('Exploit')
+                        }
+                        for (var i = 0; i < m; i++) {
+                            icons.push('Maneuver')
+                        }
+                        for (var i = 0; i < w; i++) {
+                            icons.push('Wildcard')
+                        }
+                        return icons;
+                    })(this.card.activateIcons, this.card.exploitIcons, this.card.maneuverIcons, this.card.wildcardIcons);
                 //this.card.shipSelections = this.card.shipSelectionsTextAreaValue.split('\n');
                 // add final send-off validation here (probably don't need much)
                 Vue.http.put('/api/CardData/' + this.card.id, this.card);
@@ -155,8 +193,12 @@
                     else {
                         vue.card = response.body;
                         //assign proxies for text fields
-                        if (vue.card.subtypes) vue.card.subtypesTextAreaValue = vue.card.subtypes.join('\n');
-                        if (vue.card.text) vue.card.textTextAreaValue = vue.card.text.join('\n');
+                        vue.card.subtypesTextAreaValue = vue.card.subtypes ? vue.card.subtypes.join('\n') : [];
+                        vue.card.textTextAreaValue = vue.card.text ? vue.card.text.join('\n') : [];
+                        vue.card.activateIcons = vue.card.icons.filter(function (icon) { return icon === 'Activate' }).length;
+                        vue.card.exploitIcons = vue.card.icons.filter(function (icon) { return icon === 'Exploit' }).length;
+                        vue.card.maneuverIcons = vue.card.icons.filter(function (icon) { return icon === 'Maneuver' }).length;
+                        vue.card.wildcardIcons = vue.card.icons.filter(function (icon) { return icon === 'Wildcard' }).length;
                         //if (vue.card.shipSelections) vue.card.shipSelectionsTextAreaValue = vue.card.shipSelections.join('\n');
                     }
                 }, response => {

@@ -3,7 +3,7 @@
 }
 <div id="app">
     <h2 v-if="error">{{error}}</h2>
-    <div v-if="!error">
+    <div v-if="!error && card">
         <h4>{{card.id}}</h4>
         <h2>{{card.name}}</h2>
         <div>
@@ -24,9 +24,9 @@
                 </blockquote>
                 <p>
                     <span v-if="card.hull && card.hull > 0">[Hull {{card.hull}}]</span>
-                    <span v-if="card.control && card.control > 0">[Control {{card.control}}]</span>                    
+                    <span v-if="card.control && card.control > 0">[Control {{card.control}}]</span>
                     <span v-if="card.exploits && card.exploits > 0">[Exploits {{card.exploits}}]</span>
-                    <span v-if="card.maxCopies && card.maxCopies != 2">[Max {{card.maxCopies}}]</span>              
+                    <span v-if="card.maxCopies && card.maxCopies != 2">[Max {{card.maxCopies}}]</span>
                 </p>
             </div>
             <div v-if="card.type === 'Event'">
@@ -67,7 +67,7 @@
                 </blockquote>
                 <p>
                     <span v-if="card.hull && card.hull > 0">[Hull {{card.hull}}]</span>
-                    <span v-if="card.control && card.control > 0">[Control {{card.control}}]</span>                    
+                    <span v-if="card.control && card.control > 0">[Control {{card.control}}]</span>
                     <span v-if="card.reactor && card.reactor > 0">[Reactor {{card.reactor}}]</span>
                 </p>
             </div>
@@ -83,8 +83,20 @@
                 </blockquote>
                 <p>
                     <span v-if="card.exploits && card.exploits > 0">[Exploits {{card.exploits}}]</span>
-                    <span v-if="card.control && card.control > 0">[Control {{card.control}}]</span>  
+                    <span v-if="card.control && card.control > 0">[Control {{card.control}}]</span>
                 </p>
+            </div>
+            <div v-if="card.type === 'Strategy'">
+                <p>
+                    <span v-if="card.icons">[{{card.icons | toActionIcons}}]</span>
+                    <span v-if="card.burn">[Burn {{card.burn}}]</span>
+                </p>
+                @*<card-text></card-text>*@
+                <blockquote v-if="card.text">
+                    <ul style="list-style-type:none">
+                        <li v-for="t in card.text">{{t}}</li>
+                    </ul>
+                </blockquote>
             </div>
         </div>
     </div>
@@ -99,7 +111,7 @@
         }
         return result;
     };
-     
+
     Vue.filter("toActionIcons", function (actionIcons) {
         var result = actionIcons.slice();
         for (var i = 0; i < result.length; i++) {
@@ -113,8 +125,11 @@
                 case "Maneuver":
                     result[i] = "M";
                     break;
+                case "Wildcard":
+                    result[i] = "W";
+                    break;
             }
-        } 
+        }
         return join(result, ' ');
     });
     //Vue.filter("toShipSelection", function (value) {

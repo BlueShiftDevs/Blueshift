@@ -22,13 +22,14 @@
             <option>Capital Ship</option>
             <option>Fleet</option>
             <option>Location</option>
+            <option>Strategy</option>
         </select>
     </div>
     <div>
         <label>Subtypes</label>
         <textarea v-model="card.subtypesTextAreaValue"></textarea>
     </div>
-    <div v-if="showIfCardType(['Asset','Crew','Event','Upgrade','Capital Ship','Fleet'])">
+    <div v-if="showIfCardType(['Asset','Crew','Event','Upgrade','Capital Ship','Fleet','Strategy'])">
         <label>Faction</label>
         <select v-model="card.faction">
             <option>Synedrion</option>
@@ -66,7 +67,25 @@
         <input type="checkbox" id="maneuverIcon" value="Maneuver" v-model="card.icons" />
         <label for="maneuverIcon">Maneuver</label>
     </div>
-    <div v-if="showIfCardType(['Asset', 'Crew','Event','Upgrade'])">
+    <div v-if="showIfCardType(['Strategy'])">
+        <div>
+            <label>Activate Icons</label>
+            <input type="number" v-model="card.activateIcons" />
+        </div>
+        <div>
+            <label>Exploit Icons</label>
+            <input type="number" v-model="card.exploitIcons" />
+        </div>
+        <div>
+            <label>Maneuver Icons</label>
+            <input type="number" v-model="card.maneuverIcons" />
+        </div>
+        <div>
+            <label>Wildcard Icons</label>
+            <input type="number" v-model="card.wildcardIcons" />
+        </div>
+    </div>
+    <div v-if="showIfCardType(['Asset', 'Crew','Event','Upgrade','Strategy'])">
         <label>Burn</label>
         <input type="number" v-model.number="card.burn" />
     </div>
@@ -146,7 +165,7 @@
                 scannerSize: null,
                 subtypesTextAreaValue: "",
                 textTextAreaValue: "",
-                shipSelectionsTextAreaValue: "",
+                //shipSelectionsTextAreaValue: "",
             },
             error: null
         },
@@ -161,6 +180,23 @@
                 // pull proxies back out into string arrays
                 this.card.subtypes = this.card.subtypesTextAreaValue.length > 0 ? this.card.subtypesTextAreaValue.split('\n') : null;
                 this.card.text = this.card.textTextAreaValue.length > 0 ? this.card.textTextAreaValue.split('\n') : null;
+                if (this.card.type === 'Strategy')
+                    this.card.icons = (function (a, e, m, w) {
+                        var icons = [];
+                        for (var i = 0; i < a; i++) {
+                            icons.push('Activate');
+                        }
+                        for (var i = 0; i < e; i++) {
+                            icons.push('Exploit')
+                        }
+                        for (var i = 0; i < m; i++) {
+                            icons.push('Maneuver')
+                        }
+                        for (var i = 0; i < w; i++) {
+                            icons.push('Wildcard')
+                        }
+                        return icons;
+                    })(this.card.activateIcons, this.card.exploitIcons, this.card.maneuverIcons, this.card.wildcardIcons);
                 //this.card.subtypes = this.card.subtypesTextAreaValue.split('\n');
                 //this.card.text = this.card.textTextAreaValue.split('\n');
                 //this.card.shipSelections = this.card.shipSelectionsTextAreaValue.split('\n');
