@@ -1,6 +1,18 @@
 @{
     ViewData["Title"] = "All Cards";
 }
+<style>
+    tr:nth-child(even) {
+        background: #EEE
+    }
+
+    tr:nth-child(odd) {
+        background: #FFF
+    }
+    td {
+        margin:0px 5px;
+    }
+</style>
 
 <h2>@ViewData["Title"]</h2>
 <div id="app">
@@ -36,13 +48,33 @@
         <label>No Faction</label>
         <input type="checkbox" id="noneFilter" value="None" v-model="factionFilter" />
     </div>
-    <div>
+    <table>
+        <tr>
+            <td><strong>Id</strong></td>
+            <td><strong>Name</strong></td>
+            <td><strong>Faction</strong></td>
+            <td><strong>Type</strong></td>
+            <td><strong>Icons</strong></td>
+            <td><strong>Cost</strong></td>
+            <td><strong>Burn</strong></td>
+        </tr>
+        <tr v-for="card in cards" v-if="filterByType(card) && filterByFaction(card)">
+            <td><span>{{card.id}}</span></td>
+            <td><a v-bind:href="card.detailsLink">{{card.name}}</a><span v-if="card.title"><em> {{card.title}}</em></span></td>
+            <td><span v-if="card.faction">{{card.faction[0]}}</span></td>
+            <td><span v-if="card.type">{{card.type}}</span></td>
+            <td><span v-if="card.icons">{{join(firstLetters(card.icons), ' ')}}</span></td>
+            <td><span v-if="card.cost">{{card.cost}}</span></td>
+            <td><span v-if="card.burn">{{card.burn}}</span></td>
+        </tr>
+    </table>
+    @*<div>
         <p v-for="card in cards" v-if="filterByType(card) && filterByFaction(card)">
             <a v-bind:href="card.detailsLink">{{card.name}}</a>
             <span v-if="card.title"><em> {{card.title}}</em></span>
             <span> [{{card.id}}]</span>
         </p>
-    </div>
+    </div>*@
 </div>
 <script src="~/lib/vue/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/vue.resource/1.2.1/vue-resource.min.js"></script>
@@ -65,6 +97,18 @@
                     return true;
                 return this.factionFilter.some(function (f) {
                     return f === card.faction;
+                });
+            },
+            join: function (strings, joiner) {
+                var result = strings[0];
+                for (var i = 1; i < strings.length; i++) {
+                    result = result + joiner + strings[i];
+                }
+                return result;
+            },
+            firstLetters: function (strings) {
+                return strings.map(function (el) {
+                    return el[0];
                 });
             }
         },
